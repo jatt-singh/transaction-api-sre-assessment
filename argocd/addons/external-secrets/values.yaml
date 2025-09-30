@@ -1,0 +1,4 @@
+external-secrets:
+  serviceAccount:
+    annotations:
+      iam.gke.io/gcp-service-account: external-secret-sa@solid-authority-470915-b7.iam.gserviceaccount.com

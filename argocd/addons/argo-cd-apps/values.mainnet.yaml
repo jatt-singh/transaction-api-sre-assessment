@@ -1,0 +1,33 @@
+defaults:
+  env: mainnet
+  source:
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
+        - values.mainnet.yaml
+
+apps: 
+
+                                    
+addons:
+  - name: argo-cd-apps
+    namespace: argocd
+    autosync: true
+    valueFiles:
+      - values.yaml    
+      - values.mainnet.yaml
+  - name: external-secrets
+    namespace: external-secret
+    autosync: false
+  # - name: kube-prometheus-stack
+  #   releaseName: prometheus-operator
+  #   namespace: monitoring
+  #   autosync: false
+  # - name: loki-stack
+  #   namespace: monitoring
+  #   autosync: false 
+  # - name: nginx-ingress-controller
+  #   releaseName: ingress-nginx
+  #   namespace: ingress-nginx
+  #   autosync: false

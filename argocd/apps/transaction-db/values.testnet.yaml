@@ -1,0 +1,46 @@
+namespace: transaction-api-testnet
+
+configs:
+  POSTGRES_DB: transactions
+  POSTGRES_USER: postgres
+
+service:
+  name: transaction-db
+  port: 5432
+
+statefulset:
+  name: transaction-db
+  image:
+    repository: postgres
+    tag: 15
+    pullPolicy: IfNotPresent
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  labels:
+    app: transaction-db
+  podAnnotations: {}
+  containerPort: 5432
+  resources:
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+  probes:
+    readinessCommand: ["pg_isready", "-U", "postgres"]
+    readiness:
+      initialDelaySeconds: 5
+      periodSeconds: 5
+  volumes:
+    path: "/var/lib/postgresql/data"
+    storage: "1Gi"
+    subPath: "db0"
+
+secrets:
+  secretStore: secret-store
+  key: transaction-db-testnet
+  data:
+    - name: POSTGRES_PASSWORD
+      property: pgPassword

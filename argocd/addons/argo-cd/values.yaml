@@ -1,0 +1,27 @@
+argo-cd:
+  crds:
+    keep: false
+
+
+  redis-ha:
+    enabled: true
+    auth: false
+
+  controller:
+    replicas: 1
+
+  server:
+    replicas: 1
+
+  repoServer:
+    replicas: 1
+
+  applicationSet:
+    replicas: 1
+
+  dex:
+    enabled: true
+
+  notifications:
+    enabled: true
+

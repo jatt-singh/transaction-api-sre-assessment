@@ -1,0 +1,44 @@
+nameOverride: transaction-api-testnet
+namespace: transaction-api-testnet
+
+
+# rollout:
+#   annotatelitmus: true
+
+service:
+  port: 80
+  containerPort: 8080
+image:
+  repository: us-east4-docker.pkg.dev/solid-authority-470915-b7/transaction-api/txn-backend
+  tag: latest
+configs:
+  PORT: 8080
+
+replicas: 1
+resources:
+  requests:
+    memory: 100Mi
+    cpu: 100m
+  limits:
+    memory: 256Mi
+    cpu: 200m
+
+# affinity:
+#   podAntiAffinity:
+#     keyValue: "transaction-api-testnet"      
+#     topologyKey: "topology.kubernetes.io/zone"
+#     weight: 100  
+
+autoscaling:
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 70
+
+secrets:
+  secretStore: secret-store
+  key: transaction-api-testnet
+  data:
+    - name: DATABASE_URL
+      property: dburl
+
+

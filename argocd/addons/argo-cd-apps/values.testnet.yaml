@@ -1,0 +1,22 @@
+defaults:
+  env: testnet
+  source:
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - values.yaml
+        - values.testnet.yaml
+
+apps:
+  - name: transaction-api
+    namespace: transaction-api-testnet
+    releaseName: transaction-api
+    autosync: false
+  - name: transaction-db
+    namespace: transaction-api-testnet
+    releaseName: transaction-db  
+
+
+
+  
+
