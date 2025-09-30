@@ -1,0 +1,35 @@
+nginx-ingress-controller:
+  service:
+    type: LoadBalancer
+    externalTrafficPolicy: Local
+    annotations:
+      cloud.google.com/neg: '{"ingress":true}'
+      service.beta.kubernetes.io/gcp-load-balancer-type: "External"
+  replicaCount: 1
+  publishService:
+    enabled: true
+  image:
+    registry: docker.io
+    repository: bitnami/nginx-ingress-controller
+    tag: 1.12.1
+  resources:
+    limits:	           
+      cpu: 200m       	              
+      memory: 1Gi	              
+    requests:	            
+      cpu: 100m
+      memory: 500Mi
+  autoscaling:
+    enabled: false
+    minReplicas: 3
+    maxReplicas: 5
+    targetCPU: 80
+    targetMemory: 80
+  defaultBackend:
+    resources:
+      limits:	           
+        cpu: 200m       	              
+        memory: 1Gi	              
+      requests:	            
+        cpu: 100m
+        memory: 500Mi

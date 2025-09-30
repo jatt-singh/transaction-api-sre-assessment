@@ -1,0 +1,80 @@
+kube-prometheus-stack:
+  # prometheus-node-exporter:
+  #   tolerations:
+  #     - effect: NoSchedule
+  #       operator: Exists
+  #     - effect: NoExecute
+  #       operator: Exists
+  prometheus:
+    thanosService:
+      enabled: true
+    prometheusSpec:
+      enableRemoteWriteReceiver: true
+      thanos:
+        image: quay.io/thanos/thanos:v0.37.0
+        objectStorageConfig:
+          existingSecret:
+            name: thanos-objstore-secret
+            key: objstore.yml
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: 
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 20Gi
+      retention: 2d
+      additionalScrapeConfigs:
+        kubernetes_sd_configs:
+        - role: service
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
+          action: keep
+          regex: pushgateway
+
+      
+
+  kubeEtcd:
+    serviceMonitor:
+      enabled: false
+
+  grafana:
+    grafana.ini:
+      users:
+        viewers_can_edit: true
+    sidecar:
+      dashboards:
+        enabled: true
+        label: grafana_dashboard
+        # folder: /var/lib/grafana/dashboards
+        updateIntervalSeconds: 10
+        # folderAnnotation: grafana_folder 
+        provider:
+          allowUiUpdates: true
+          foldersFromFilesStructure: true
+    persistence:
+      enabled: true
+      type: pvc
+      storageClassName: ""
+      accessModes:
+        - ReadWriteOnce
+      size: 20Gi
+    
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+        acme.cert-manager.io/http01-edit-in-place: "true"
+        cert-manager.io/acme-challenge-type: http01
+        cert-manager.io/cluster-issuer: letsencrypt
+        # ingress.kubernetes.io/force-ssl-redirect: "true"
+        cert-manager.io/issue-temporary-certificate: "true"
+        kubernetes.io/tls-acme: "true"
+      hosts:
+        - grafana.suidex.org
+      tls:
+      - secretName: testnet-grafana-tls
+        hosts:
+        - grafana.suidex.org

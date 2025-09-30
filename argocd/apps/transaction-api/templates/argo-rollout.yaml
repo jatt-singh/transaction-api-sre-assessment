@@ -1,0 +1,134 @@
+{{- if .Values.rollout }}
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "app.name" . }}-rollout
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+  annotations:
+{{- if .Values.rollout.slackChannel }}
+    notifications.argoproj.io/subscribe.on-rollout-completed.slack: {{ .Values.rollout.slackChannel }}
+    notifications.argoproj.io/subscribe.on-rollout-step-completed.slack: {{ .Values.rollout.slackChannel }}
+    notifications.argoproj.io/subscribe.on-rollout-updated.slack: {{ .Values.rollout.slackChannel }}
+    notifications.argoproj.io/subscribe.on-scaling-replica-set.slack: {{ .Values.rollout.slackChannel }}
+{{- end}}
+{{- if .Values.rollout.annotatelitmus }}
+    litmuschaos.io/chaos: "true"
+{{- end}}
+spec:
+{{- if not .Values.autoscaling }}
+  replicas: {{ .Values.replicas }}
+{{- end }}
+  selector:
+    matchLabels:
+      {{- include "app.selectorLabels" . | nindent 6 }}
+  strategy:
+    canary:
+      stableService: {{ include "app.name" . }}-stable
+      canaryService: {{ include "app.name" . }}-canary
+      trafficRouting:
+        istio:
+          virtualService:
+            name: {{ include "app.name" . }}-vsvc
+            routes:
+            - primary
+      steps:
+{{- if $.Values.rollout.canarySteps }}
+{{- toYaml $.Values.rollout.canarySteps | nindent 8 }}
+{{- else }}
+      - setWeight: 0 # Not publically accessible, for manual smoke testing
+      - setCanaryScale: { replicas: 1 }
+      - pause: { duration: 10m }
+      - setWeight: 10 # Trickle in some load, to catch errors
+      - setCanaryScale: { matchTrafficWeight: true }
+      - pause: { duration: 20m }
+      - setWeight: 50 # Half and half, to catch performance issues
+      - pause: { duration: 30m }
+      - setWeight: 100 # Fully deployed
+{{- end }}
+  template:
+    metadata:
+{{- if .Values.prometheus }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: {{ default "9090" (.Values.prometheus).port | quote }}
+        prometheus.io/path: {{ default "/metrics" (.Values.prometheus).path | quote }}
+{{- end }}
+      labels:
+{{- include "app.labels" . | nindent 8 }}
+    spec:
+{{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: your-image-pull-secret
+{{- end }}
+{{- if .Values.podSecurityContext }}
+      securityContext:
+{{ toYaml .Values.podSecurityContext | nindent 8 }}
+{{- end }}
+      containers:
+      - name: {{ include "app.name" . }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ default "IfNotPresent" .Values.image.pullPolicy | quote }}
+{{- if .Values.service }}
+        ports:
+        - containerPort: {{ .Values.service.containerPort }}
+          name: {{ include "app.name" . | trunc 15 }}
+{{- end }}
+        envFrom:
+{{- if .Values.configs }}
+        - configMapRef:
+            name: {{ include "app.name" . }}-config
+{{- end }}
+{{- if .Values.secrets }}
+        - secretRef:
+            name: {{ include "app.name" . }}-secret
+{{- end }}
+{{- if .Values.probes }}
+        livenessProbe:
+          httpGet:
+            path: {{ default "/internal/alive" .Values.probes.livenessPath }}
+            port:  {{ .Values.service.containerPort }}
+{{- toYaml .Values.probes.liveness | nindent 10 }}
+        readinessProbe:
+          httpGet:
+            path: {{ default "/internal/ready" .Values.probes.readinessPath }}
+            port:  {{ .Values.service.containerPort }}
+{{- toYaml .Values.probes.readiness | nindent 10 }}
+{{- end }}
+{{- with .Values.resources }}
+        resources:
+{{ toYaml . | indent 10 }}
+{{- end }}
+{{- if .Values.affinity }}
+      affinity:
+{{- if .Values.affinity.podAntiAffinity }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - {{ .Values.affinity.podAntiAffinity.keyValue }}
+              topologyKey:  {{ .Values.affinity.podAntiAffinity.topologyKey }}
+            weight: {{ .Values.affinity.podAntiAffinity.weight }}
+{{- end }}
+{{- if .Values.affinity.key }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: {{ .Values.affinity.key }}
+                operator: In
+                values:
+                - {{ .Values.affinity.value }}
+      tolerations:
+      - effect: NoSchedule
+        key: {{ .Values.affinity.key }}
+        operator: Equal
+        value: {{ .Values.affinity.value }}
+{{- end }}
+{{- end }}
+{{- end }}

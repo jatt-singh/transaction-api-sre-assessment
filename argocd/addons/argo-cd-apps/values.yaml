@@ -1,0 +1,10 @@
+defaults:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  source:
+    repoURL: git@github.com:jatt-singh/transaction-api-sre-assessment.git
+    targetRevision: HEAD
+
+apps: []
+addons: []

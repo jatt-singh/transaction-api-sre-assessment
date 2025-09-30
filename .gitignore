@@ -1,0 +1,39 @@
+# Local .terraform directories
+**/.terraform/*
+.terraform*
+
+# Terraform state files
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Override files (local only, not for Git)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform plan output
+*.plan
+plan.out
+
+# GCP credentials (never commit service account keys!)
+*.json
+*.p12
+
+# IDE/editor stuff
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+terraform.tfstate*
+.terraform*
+plan*
