@@ -20,7 +20,7 @@ spec:
   source:
     repoURL: {{ $.Values.defaults.source.repoURL }} # Can point to either a Helm chart repo or a git repo.
     targetRevision: {{ default $.Values.defaults.source.targetRevision $app.targetRevision }} # For Helm, this refers to the chart version.
-    path: apps/{{ $app.name }} # This has no meaning for Helm charts pulled directly from a Helm repo instead of git.
+    path: argocd/apps/{{ $app.name }} # This has no meaning for Helm charts pulled directly from a Helm repo instead of git.
 
     # directory
     {{- if (($app.source).directory) }}
@@ -106,7 +106,7 @@ spec:
   source:
     repoURL: {{ $.Values.defaults.source.repoURL }} # Can point to either a Helm chart repo or a git repo.
     targetRevision: {{ default $.Values.defaults.source.targetRevision $app.targetRevision }} # For Helm, this refers to the chart version.
-    path: addons/{{ $app.name }} # This has no meaning for Helm charts pulled directly from a Helm repo instead of git.
+    path: argocd/addons/{{ $app.name }} # This has no meaning for Helm charts pulled directly from a Helm repo instead of git.
 
     # directory
     {{- if (($app.source).directory) }}

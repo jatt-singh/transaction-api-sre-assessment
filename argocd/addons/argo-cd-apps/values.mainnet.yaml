@@ -5,7 +5,6 @@ defaults:
     helm:
       valueFiles:
         - values.yaml
-        - values.mainnet.yaml
 
 apps: 
 
@@ -19,6 +18,7 @@ addons:
       - values.mainnet.yaml
   - name: external-secrets
     namespace: external-secret
+    releaseName: external-secret
     autosync: false
   # - name: kube-prometheus-stack
   #   releaseName: prometheus-operator
