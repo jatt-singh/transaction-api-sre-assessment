@@ -86,7 +86,10 @@ This repository contains the infrastructure and Kubernetes deployment configurat
 
 # Part 2: Monitoring & Reliability
 
-## Overview -  This part focuses on setting up monitoring and reliability for the Transaction API Service. The goal is to collect metrics, monitor application and infrastructure health, and define reliability targets using Prometheus, Grafana, and Loki.
+## Overview   
+This part focuses on setting up monitoring and reliability for the Transaction API Service. The goal is to collect metrics, monitor application and infrastructure health, and define reliability targets using Prometheus, Grafana, and Loki.
+
+---
 
 ## Monitoring Stack
 
@@ -136,6 +139,8 @@ This repository contains the infrastructure and Kubernetes deployment configurat
 ## Overview
 This section explains how to operate the **Transaction API Service** in production.  
 It covers **common issues, troubleshooting steps, incident response procedures, and quick problem checks** to ensure smooth operation and maintain service reliability.
+
+---
 
 ## Common Issues and Troubleshooting
 
