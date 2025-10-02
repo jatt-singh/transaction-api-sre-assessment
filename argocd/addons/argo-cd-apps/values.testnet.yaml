@@ -7,6 +7,14 @@ defaults:
         - values.yaml
         - values.testnet.yaml
 
+addons:
+  - name: argo-cd-apps
+    namespace: argocd
+    autosync: true
+    valueFiles:
+      - values.yaml    
+      - values.testnet.yaml
+
 apps:
   - name: transaction-api
     namespace: transaction-api-testnet
@@ -15,8 +23,3 @@ apps:
   - name: transaction-db
     namespace: transaction-api-testnet
     releaseName: transaction-db  
-
-
-
-  
-

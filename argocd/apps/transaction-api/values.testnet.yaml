@@ -41,4 +41,6 @@ secrets:
     - name: DATABASE_URL
       property: dburl
 
-
+prometheus:
+  port: 8080
+  path: metrics

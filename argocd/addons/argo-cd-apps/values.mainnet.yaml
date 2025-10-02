@@ -20,13 +20,14 @@ addons:
     namespace: external-secret
     releaseName: external-secret
     autosync: false
-  # - name: kube-prometheus-stack
-  #   releaseName: prometheus-operator
-  #   namespace: monitoring
-  #   autosync: false
-  # - name: loki-stack
-  #   namespace: monitoring
-  #   autosync: false 
+  - name: kube-prometheus-stack
+    releaseName: prometheus
+    namespace: monitoring
+    autosync: false
+  - name: loki-stack
+    namespace: monitoring
+    releaseName: loki
+    autosync: false 
   # - name: nginx-ingress-controller
   #   releaseName: ingress-nginx
   #   namespace: ingress-nginx
