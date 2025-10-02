@@ -115,9 +115,11 @@ This part focuses on setting up monitoring and reliability for the Transaction A
 - Memory Usage: Resident memory consumption.
 - Disk usage: Check Database disk usage
 
-## Database Health: Monitored via PostgreSQL metrics exposed to Prometheus.
+## Database Health:
+Monitored via PostgreSQL metrics exposed to Prometheus.
 
-## Grafana Dashboard - A Grafana dashboard has been created to monitor the Transaction API service with the following panels:
+## Grafana Dashboard
+ A Grafana dashboard has been created to monitor the Transaction API service with the following panels:
 
 - Dashboard is saved in Grafana under the name “Transaction API Monitoring”.
 - Metrics are scraped by Prometheus and visualized in real-time.
