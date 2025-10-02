@@ -84,11 +84,11 @@ This repository contains the infrastructure and Kubernetes deployment configurat
 
 ---
 
-## Part 2: Monitoring & Reliability
+# Part 2: Monitoring & Reliability
 
-# Overview -  This part focuses on setting up monitoring and reliability for the Transaction API Service. The goal is to collect metrics, monitor application and infrastructure health, and define reliability targets using Prometheus, Grafana, and Loki.
+## Overview -  This part focuses on setting up monitoring and reliability for the Transaction API Service. The goal is to collect metrics, monitor application and infrastructure health, and define reliability targets using Prometheus, Grafana, and Loki.
 
-# Monitoring Stack
+## Monitoring Stack
 
 1. Prometheus: Collects metrics from the Transaction API, PostgreSQL database, and infrastructure.
 
@@ -98,21 +98,21 @@ This repository contains the infrastructure and Kubernetes deployment configurat
 
 - Metrics Collected
 
-# Application Performance
+## Application Performance
 - API Response Times: P95 latency of HTTP requests.
 - Throughput: Number of HTTP requests per second.
 - Error Rate: Percentage of HTTP requests resulting in 5xx errors.
 
-# Transaction Processing
+## Transaction Processing
 - Transaction Success / Fail: Counts of successful and failed transactions.
 
-# Infrastructure & Database Health
+## Infrastructure & Database Health
 
 - CPU Usage: Container CPU consumption for Transaction API pods.
 - Memory Usage: Resident memory consumption.
 - Disk usage: Check Database disk usage
 
-# Database Health: Monitored via PostgreSQL metrics exposed to Prometheus.
+## Database Health: Monitored via PostgreSQL metrics exposed to Prometheus.
 
 ## Grafana Dashboard - A Grafana dashboard has been created to monitor the Transaction API service with the following panels:
 
